@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ucf.assignments.ListofItemsController">
+   <children>
+      <ToolBar prefHeight="40.0" prefWidth="600.0">
+        <items>
+            <MenuButton mnemonicParsing="false" text="File">
+              <items>
+                <MenuItem fx:id="Save" mnemonicParsing="false" onAction="#saveList" text="Save" />
+                <MenuItem fx:id="Load" mnemonicParsing="false" onAction="#loadList" text="Load" />
+              </items>
+            </MenuButton>
+          <Button mnemonicParsing="false" onAction="#makeNewItem" text="New Item" />
+            <Button mnemonicParsing="false" onAction="#editItem" text="Edit Item" />
+            <Button mnemonicParsing="false" onAction="#deleteItem" text="Remove" />
+            <TextField fx:id="filterSearch" prefHeight="25.0" prefWidth="245.0" promptText="Search" translateX="80.0" />
+        </items>
+      </ToolBar>
+      <TableView fx:id="tableView" layoutY="40.0" prefHeight="361.0" prefWidth="600.0">
+        <columns>
+            <TableColumn fx:id="PriceCol" prefWidth="118.0" text="Price" />
+          <TableColumn fx:id="NumberCol" prefWidth="152.0" text="Serial Number" />
+          <TableColumn fx:id="NameCol" prefWidth="329.0" text="Item Name" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
