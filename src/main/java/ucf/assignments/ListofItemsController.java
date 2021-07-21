@@ -1,56 +1,57 @@
 package ucf.assignments;
 
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Copyright 2021 Matthew Neet
+ */
+
 import com.google.gson.Gson;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 
-import java.awt.event.ActionEvent;
 import java.io.*;
-import java.util.Objects;
+import java.util.Formatter;
 
 public class ListofItemsController {
 
     public MenuItem Save;
     public MenuItem Load;
-    @FXML
-    private TextField filterSearch;
-    @FXML public static TableView<Items> tableView;
+    @FXML public TextField nameOfItem;
+    @FXML public TextField serialNumberBox;
+    @FXML public TextField priceBox;
+    @FXML private TextField filterSearch;
+    @FXML private TableView<Items> tableView;
     @FXML private TableColumn<Items, String> NameCol;
     @FXML private TableColumn<Items, String> NumberCol;
     @FXML private TableColumn<Items, String> PriceCol;
-
-    public static ObservableList<Items> ItemList = FXCollections.observableArrayList();
 
     public ListofItemsController(){
 
     }
 
+    public static ObservableList<Items> ItemList = FXCollections.observableArrayList();
+
     @FXML
     public void initialize(){
-        try{
 
+        tableView.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> lookAtItem()
+        );
+
+        try{
             NameCol.setCellValueFactory(new PropertyValueFactory<>("itemName"));
             NumberCol.setCellValueFactory(new PropertyValueFactory<>("serialNumber"));
             PriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-            Items dummy = new Items("dummy", "1234567890", "9");
-
-
             tableView.setItems(ItemList);
-            ItemList.add(dummy);
 
         } catch (Exception e){
             System.out.println("I don't work on a fundamental level.");
@@ -58,29 +59,41 @@ public class ListofItemsController {
         }
     }
 
-    public String makeNewItem(){
-        Stage stage = new Stage();
-        try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("NewItemGUI.fxml")));
-            Scene scene = new Scene(root);
+    public String makeNewItem() throws IOException {
 
-            stage.setScene(scene);
-            stage.setTitle("New/Edit Item");
-            stage.show();
+        ItemVerifier.checkSN(serialNumberBox);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "I opened the screen for New Item";
+        Double amount = Double.parseDouble(priceBox.getText());
+
+        Items item = new Items();
+        item.setItemName(nameOfItem.getText());
+        item.setSerialNumber(serialNumberBox.getText());
+        Formatter fmt = new Formatter();
+        fmt.format("%.2f", amount);
+        item.setPrice("$" + fmt);
+        ListofItemsController.ItemList.add(item);
+
+        return "I added an item";
     }
 
-    public String editItem() throws IOException {
+    public void lookAtItem(){
         Items item = tableView.getSelectionModel().getSelectedItem();
-        NewItemController.nameOfItem.setText(item.getItemName());
-        NewItemController.serialNumberBox.setText(item.getSerialNumber());
-        NewItemController.priceBox.setText(item.getPrice());
+        priceBox.setText(item.getPrice());
+        serialNumberBox.setText(item.getSerialNumber());
+        nameOfItem.setText(item.getItemName());
+    }
 
-        return "I opened the screen for Edit Item";
+    public String editItem(){
+        Items item = tableView.getSelectionModel().getSelectedItem();
+        item.setPrice(priceBox.getText());
+        item.setSerialNumber(serialNumberBox.getText());
+        item.setItemName(nameOfItem.getText());
+
+        priceBox.clear();
+        serialNumberBox.clear();
+        nameOfItem.clear();
+
+        return "I edited an item";
     }
 
     public String deleteItem(){
@@ -90,6 +103,8 @@ public class ListofItemsController {
         itemSelected.forEach(allItems::remove);
         return "I deleted an item";
     }
+
+
 
     String path = System.getProperty("user.dir") + "/Made_Lists";
 

@@ -32,7 +32,7 @@ public class ViewChanger {
         stage.show();
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setController(new StartController(stage));
+        loader.setController(new ListofItemsController());
     }
 
     public static void setScene(Scene scene){
@@ -52,6 +52,6 @@ public class ViewChanger {
         newStage.show();
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setController(new StartController(stage));
+        loader.setController(new ListofItemsController());
     }
 }

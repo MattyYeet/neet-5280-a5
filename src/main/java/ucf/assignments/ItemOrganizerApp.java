@@ -22,7 +22,9 @@ public class ItemOrganizerApp extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("StartGUI.fxml")));
+            String path = "src/resources/ucf/assignments/";
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ListofItemsGUI.fxml"));
+            Parent root = loader.load();
             Scene scene = new Scene(root);
 
             stage.setScene(scene);

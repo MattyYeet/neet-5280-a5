@@ -1,11 +1,10 @@
 package ucf.assignments;
 
-import java.io.IOException;
+/*
+ *  UCF COP3330 Summer 2021 Assignment 5 Solution
+ *  Copyright 2021 Matthew Neet
+ */
 
 public class SNHelpController {
-    public String ok() throws IOException {
-        ViewChanger.newStage.close();
-        ViewChanger.changeTo(View.NEW_EDIT_ITEM);
-        return "The sn help menu was closed";
-    }
+
 }
