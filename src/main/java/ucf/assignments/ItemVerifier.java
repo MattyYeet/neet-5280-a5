@@ -23,7 +23,7 @@ public class ItemVerifier {
         }
         return "The sn has been checked";
     }
-    public String checkPrice(TextField box) throws IOException {
+    public static String checkPrice(TextField box) throws IOException {
         if (box.getText().length() != 10 || box.getText().equals("")) {
             Stage stage = new Stage();
             FXMLLoader loader = new FXMLLoader(ItemVerifier.class.getResource("PriceHelpGUI.fxml"));
@@ -33,7 +33,7 @@ public class ItemVerifier {
             stage.setScene(scene);
             stage.setTitle("Price Help Menu");
             stage.show();
-            return "I opened the sn help menu";
+            return "I opened the price help menu";
         }
         return "The price has been checked";
     }

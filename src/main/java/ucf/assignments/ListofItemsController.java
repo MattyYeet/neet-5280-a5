@@ -30,7 +30,7 @@ public class ListofItemsController {
     @FXML public TextField serialNumberBox;
     @FXML public TextField priceBox;
     @FXML private TextField filterSearch;
-    @FXML private TableView<Items> tableView;
+    @FXML public TableView<Items> tableView;
     @FXML private TableColumn<Items, String> NameCol;
     @FXML private TableColumn<Items, String> NumberCol;
     @FXML private TableColumn<Items, String> PriceCol;
@@ -63,19 +63,23 @@ public class ListofItemsController {
 
     public String makeNewItem() throws IOException {
 
-        ItemVerifier.checkSN(serialNumberBox);
+        if(ItemVerifier.checkSN(serialNumberBox).equals("I opened the sn help menu")) {
+            return "SN broke so no item added";
+        } else if(ItemVerifier.checkPrice(priceBox).equals("I opened the price help menu")){
+            return "Price broke so no item added";
+        } else {
+            Double amount = Double.parseDouble(priceBox.getText());
 
-        Double amount = Double.parseDouble(priceBox.getText());
+            Items item = new Items();
+            item.setItemName(nameOfItem.getText());
+            item.setSerialNumber(serialNumberBox.getText());
+            Formatter fmt = new Formatter();
+            fmt.format("%.2f", amount);
+            item.setPrice("$" + fmt);
+            ListofItemsController.ItemList.add(item);
 
-        Items item = new Items();
-        item.setItemName(nameOfItem.getText());
-        item.setSerialNumber(serialNumberBox.getText());
-        Formatter fmt = new Formatter();
-        fmt.format("%.2f", amount);
-        item.setPrice("$" + fmt);
-        ListofItemsController.ItemList.add(item);
-
-        return "I added an item";
+            return "I added an item";
+        }
     }
 
     public void lookAtItem(){
@@ -85,19 +89,25 @@ public class ListofItemsController {
         nameOfItem.setText(item.getItemName());
     }
 
-    public String editItem(){
+    public String editItem() throws IOException {
         Items item = tableView.getSelectionModel().getSelectedItem();
-        item.setPrice(priceBox.getText());
-        item.setSerialNumber(serialNumberBox.getText());
-        item.setItemName(nameOfItem.getText());
+        if(ItemVerifier.checkSN(serialNumberBox).equals("I opened the sn help menu")) {
+            return "SN broke so no item added";
+        } else if(ItemVerifier.checkPrice(priceBox).equals("I opened the price help menu")){
+            return "Price broke so no item added";
+        } else {
+            item.setPrice(priceBox.getText());
+            item.setSerialNumber(serialNumberBox.getText());
+            item.setItemName(nameOfItem.getText());
 
-        priceBox.clear();
-        serialNumberBox.clear();
-        nameOfItem.clear();
+            priceBox.clear();
+            serialNumberBox.clear();
+            nameOfItem.clear();
 
-        tableView.refresh();
+            tableView.refresh();
 
-        return "I edited an item";
+            return "I edited an item";
+        }
     }
 
     public String deleteItem(){
@@ -110,29 +120,29 @@ public class ListofItemsController {
 
     public String searchItem(){
         ObservableList<Items> filterList = FXCollections.observableArrayList();
-        //filterList.clear();
         for(Items item : ItemList){
             tableView.setItems(filterList);
-            if(item.getItemName().toLowerCase(Locale.ROOT).contains(filterSearch.getText()) || item.getSerialNumber().contains(filterSearch.getText())){
+            if(item.getItemName().contains(filterSearch.getText().toLowerCase()) || item.getSerialNumber().contains(filterSearch.getText())){
                 filterList.add(item);
-                tableView.refresh();
             }
         }
+        tableView.refresh();
         return "I searched for an item";
     }
 
     public String refreshList(){
         filterSearch.clear();
+        priceBox.clear();
+        serialNumberBox.clear();
+        nameOfItem.clear();
         tableView.setItems(ItemList);
         tableView.refresh();
         return "The table has been refreshed.";
     }
 
-    String path = System.getProperty("user.dir") + "/Made_Lists";
-
     public String saveList(){
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File(path));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 
         System.out.println("I work for saving");
         Window stage = tableView.getScene().getWindow();
@@ -141,21 +151,31 @@ public class ListofItemsController {
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(".json", "*.json"),
                 new FileChooser.ExtensionFilter(".tsv", "*.tsv"),
                 new FileChooser.ExtensionFilter(".html", "*.html"));
+        File file = fileChooser.showSaveDialog(stage);
+        fileChooser.setInitialDirectory(file.getParentFile());
 
-        try{
-            File file = fileChooser.showSaveDialog(stage);
-            fileChooser.setInitialDirectory(file.getParentFile());
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        if(file.toString().endsWith(".json")) {
+            try {
 
-            Gson gson = new Gson();
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
-            gson.toJson(tableView.getItems(), writer);
+                Gson gson = new Gson();
 
-            writer.close();
-        } catch (IOException e){
-            System.out.println("Saving doesn't work");
+                gson.toJson(tableView.getItems(), writer);
+
+                writer.close();
+            } catch (IOException e) {
+                System.out.println("Saving json doesn't work");
+            }
         }
 
+        if(file.toString().endsWith(".txt")){
+            //Saves it as TSV
+        }
+
+        if(file.toString().endsWith(".html")){
+            //Saves it as HTML
+        }
         tableView.refresh();
 
         return "I saved a list";
@@ -163,17 +183,20 @@ public class ListofItemsController {
 
     public String loadList(){
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File(path));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         System.out.println("I work for loading");
         Window stage = tableView.getScene().getWindow();
         fileChooser.setTitle("Load Menu");
 
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(".json", "*.json"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(".json", "*.json"),
+                new FileChooser.ExtensionFilter(".tsv", "*.tsv"),
+                new FileChooser.ExtensionFilter(".html", "*.html"));
 
         ItemList.clear();
         File file = fileChooser.showOpenDialog(stage);
         fileChooser.setInitialDirectory(file.getParentFile());
 
+        if(file.toString().endsWith(".json")){
             Gson gson = new Gson();
             try {
                 Reader reader = new FileReader(file);
@@ -183,8 +206,18 @@ public class ListofItemsController {
                     ItemList.add(x);
 
             } catch (IOException e) {
-                System.out.println("Loading doesn't work");
+                System.out.println("Loading json doesn't work");
             }
+        }
+
+        if(file.toString().endsWith(".txt")){
+            //Saves it as TSV
+        }
+
+        if(file.toString().endsWith(".html")){
+            //Saves it as HTML
+        }
+
         return "I loaded a list from main";
     }
 }
