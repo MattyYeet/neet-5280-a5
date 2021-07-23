@@ -17,7 +17,8 @@
                 <MenuItem fx:id="Load" mnemonicParsing="false" onAction="#loadList" text="Load" />
             </items>
         </MenuButton>
-        <TextField fx:id="filterSearch" prefHeight="25.0" prefWidth="245.0" promptText="Search" translateX="280.0" />
+      <Button mnemonicParsing="false" onAction="#refreshList" text="Refresh" />
+        <TextField fx:id="filterSearch" onKeyPressed="#searchItem" prefHeight="25.0" prefWidth="245.0" promptText="Search" translateX="230.0" />
     </ToolBar>
     <TableView fx:id="tableView" layoutY="40.0" prefHeight="361.0" prefWidth="600.0">
       <columns>

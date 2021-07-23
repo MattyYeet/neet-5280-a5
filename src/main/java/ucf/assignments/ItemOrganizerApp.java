@@ -28,6 +28,7 @@ public class ItemOrganizerApp extends Application {
             Scene scene = new Scene(root);
 
             stage.setScene(scene);
+            stage.setTitle("Item List Organizer");
             stage.show();
 
              /*ViewChanger.setScene(scene);

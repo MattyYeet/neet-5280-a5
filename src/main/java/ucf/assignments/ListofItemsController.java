@@ -18,7 +18,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.Formatter;
+import java.util.Locale;
 
 public class ListofItemsController {
 
@@ -93,6 +95,8 @@ public class ListofItemsController {
         serialNumberBox.clear();
         nameOfItem.clear();
 
+        tableView.refresh();
+
         return "I edited an item";
     }
 
@@ -104,7 +108,25 @@ public class ListofItemsController {
         return "I deleted an item";
     }
 
+    public String searchItem(){
+        ObservableList<Items> filterList = FXCollections.observableArrayList();
+        //filterList.clear();
+        for(Items item : ItemList){
+            tableView.setItems(filterList);
+            if(item.getItemName().toLowerCase(Locale.ROOT).contains(filterSearch.getText()) || item.getSerialNumber().contains(filterSearch.getText())){
+                filterList.add(item);
+                tableView.refresh();
+            }
+        }
+        return "I searched for an item";
+    }
 
+    public String refreshList(){
+        filterSearch.clear();
+        tableView.setItems(ItemList);
+        tableView.refresh();
+        return "The table has been refreshed.";
+    }
 
     String path = System.getProperty("user.dir") + "/Made_Lists";
 
@@ -116,7 +138,9 @@ public class ListofItemsController {
         Window stage = tableView.getScene().getWindow();
         fileChooser.setTitle("Save Menu");
         fileChooser.setInitialFileName("myList");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(".json", "*.json"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(".json", "*.json"),
+                new FileChooser.ExtensionFilter(".tsv", "*.tsv"),
+                new FileChooser.ExtensionFilter(".html", "*.html"));
 
         try{
             File file = fileChooser.showSaveDialog(stage);
@@ -131,6 +155,9 @@ public class ListofItemsController {
         } catch (IOException e){
             System.out.println("Saving doesn't work");
         }
+
+        tableView.refresh();
+
         return "I saved a list";
     }
 
@@ -147,17 +174,17 @@ public class ListofItemsController {
         File file = fileChooser.showOpenDialog(stage);
         fileChooser.setInitialDirectory(file.getParentFile());
 
-        Gson gson = new Gson();
-        try {
-            Reader reader = new FileReader("Made_Lists/myList.json");
-            Items[] result = gson.fromJson(reader, Items[].class);
+            Gson gson = new Gson();
+            try {
+                Reader reader = new FileReader(file);
+                Items[] result = gson.fromJson(reader, Items[].class);
 
-            for(Items x : result)
-                ItemList.add(x);
+                for (Items x : result)
+                    ItemList.add(x);
 
-        } catch (IOException e){
-            System.out.println("Loading doesn't work");
-        }
+            } catch (IOException e) {
+                System.out.println("Loading doesn't work");
+            }
         return "I loaded a list from main";
     }
 }
