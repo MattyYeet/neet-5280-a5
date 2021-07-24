@@ -19,7 +19,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Formatter;
 import java.util.NoSuchElementException;
 
@@ -167,6 +166,7 @@ public class ListofItemsController {
         fileChooser.setInitialDirectory(file.getParentFile());
 
         if(file.toString().endsWith(".json")) {
+            //Saves it as a JSON
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
@@ -268,6 +268,7 @@ public class ListofItemsController {
         fileChooser.setInitialDirectory(file.getParentFile());
 
         if(file.toString().endsWith(".json")){
+            //Loads a JSON
             Gson gson = new Gson();
             try {
                 Reader reader = new FileReader(file);
@@ -306,6 +307,7 @@ public class ListofItemsController {
             StringBuilder textBuild = new StringBuilder();
             String text;
             int count = 0;
+            //Gets rid of all the fluff
             while((text = reader.readLine()) != null){
                 if(text.contains("<td>")){
                     text = text.replace("<td>", "");
@@ -316,17 +318,13 @@ public class ListofItemsController {
                 }
             }
             reader.close();
-            /*PrintWriter writer = new PrintWriter(new FileWriter("test.txt"));
-            writer.write(textBuild.toString());
-            writer.close();*/
 
+            //Loops and increments by three since each item has three things
             for(int i=0; i <= count; i+=3) {
                 if(i + 3 > count){
                     break;
                 }
                 String[] info = textBuild.toString().split(" ");
-                /*System.out.println(textBuild);
-                System.out.println(Arrays.toString(info));*/
 
                 Items item = new Items();
                 item.setPrice(info[i]);

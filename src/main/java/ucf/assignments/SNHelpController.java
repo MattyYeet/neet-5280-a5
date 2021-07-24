@@ -6,5 +6,5 @@ package ucf.assignments;
  */
 
 public class SNHelpController {
-
+    //Nothing happens here, I just needed to make a controller for the fxml file
 }

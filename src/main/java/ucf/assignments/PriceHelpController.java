@@ -6,4 +6,5 @@ package ucf.assignments;
  */
 
 public class PriceHelpController {
+    //Nothing happens here, I just needed to make a controller for the fxml file
 }

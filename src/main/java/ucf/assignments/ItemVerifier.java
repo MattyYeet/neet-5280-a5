@@ -15,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class ItemVerifier {
     public static String checkSN(String box) throws IOException {
+        //Checks if the SN is viable
         if (box.length() != 10 || box.equals("") ) {
             Stage stage = new Stage();
             FXMLLoader loader = new FXMLLoader(ItemVerifier.class.getResource("SNHelpGUI.fxml"));
@@ -26,6 +27,8 @@ public class ItemVerifier {
             stage.show();
             return "I opened the sn help menu";
         }
+
+        //Checks if the SN already exits
         for(Items item : ListofItemsController.ItemList){
             if(box.equals(item.getSerialNumber())){
                 Stage stage = new Stage();
@@ -43,7 +46,10 @@ public class ItemVerifier {
     }
     public static String checkPrice(String box) throws IOException {
         try {
+            //Makes a value that is the price converted to a double
             Double amount = Double.parseDouble(box);
+
+            //Checks if the double and what was entered are the same
             if (box.equals("") || box.equals(amount.toString())) {
                 Stage stage = new Stage();
                 FXMLLoader loader = new FXMLLoader(ItemVerifier.class.getResource("PriceHelpGUI.fxml"));
@@ -55,6 +61,7 @@ public class ItemVerifier {
                 stage.show();
                 return "I opened the price help menu";
             }
+            //if it cant be converted to a number aka not one
         } catch (NumberFormatException e){
             Stage stage = new Stage();
             FXMLLoader loader = new FXMLLoader(ItemVerifier.class.getResource("PriceHelpGUI.fxml"));
@@ -69,6 +76,7 @@ public class ItemVerifier {
         return "The price has been checked";
     }
     public static String checkName(String box) throws IOException {
+        //Checks if the name is long enough
         if(box.length() < 2 || box.length() > 256){
             Stage stage = new Stage();
             FXMLLoader loader = new FXMLLoader(ItemVerifier.class.getResource("NameHelpGUI.fxml"));
@@ -80,6 +88,8 @@ public class ItemVerifier {
             stage.show();
             return "I opened the name help menu";
         }
+
+        //Checks if the name already exists
         for(Items item : ListofItemsController.ItemList){
             if(box.equals(item.getItemName())){
                 Stage stage = new Stage();

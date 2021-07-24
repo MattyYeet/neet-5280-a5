@@ -1,0 +1,47 @@
+@startuml
+class ItemOrganizerApp{
+run
+}
+class ListofItemsController{
++makeNewItem()
++editItem()
++deleteItem()
++searchItem()
++refreshList()
++saveList(json, tsv, html)
++loadList(json, tsv, html)
+}
+class Items{
+price
+serial number
+name
+}
+class ItemVerifier{
++checkSN()
++checkPrice()
++checkName()
+}
+class FileSaved
+class FileLoaded
+class NameHelpController
+class SNHelpController
+class PriceHelpController
+class ItemMade
+class ItemEdited
+class ItemDeleted
+
+ItemOrganizerApp -> ListofItemsController
+ListofItemsController --> Items
+ListofItemsController <--> FileLoaded
+ListofItemsController <--> FileSaved
+Items --> ItemVerifier
+ItemVerifier ---> NameHelpController
+ItemVerifier ---> PriceHelpController
+ItemVerifier ---> SNHelpController
+ItemVerifier --> ItemMade
+ItemVerifier --> ItemEdited
+ItemVerifier --> ItemDeleted
+ItemMade ---> ListofItemsController
+ItemEdited ---> ListofItemsController
+ItemDeleted ---> ListofItemsController
+@enduml
