@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="345.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ucf.assignments.NameHelpController">
+    <Label layoutX="111.0" layoutY="47.0" prefHeight="70.0" prefWidth="385.0" text="Hey, don't do that">
+        <font>
+            <Font size="48.0" />
+        </font>
+    </Label>
+    <Label layoutX="77.0" layoutY="146.0" text="The name has to be between">
+        <font>
+            <Font size="36.0" />
+        </font>
+    </Label>
+    <Label layoutX="97.0" layoutY="241.0" text="2 and 256 characters, and no duplicates">
+        <font>
+            <Font size="24.0" />
+        </font>
+    </Label>
+</AnchorPane>

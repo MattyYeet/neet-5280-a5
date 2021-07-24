@@ -26,7 +26,6 @@ public class Items {
         this.itemName = itemName;
     }
 
-
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
