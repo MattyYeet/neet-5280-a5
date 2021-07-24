@@ -6,9 +6,9 @@ package ucf.assignments;
  */
 
 import com.google.gson.Gson;
+import com.sun.jdi.NativeMethodException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
@@ -18,10 +18,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
-import javax.swing.*;
 import java.io.*;
-import java.util.Arrays;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Formatter;
+import java.util.NoSuchElementException;
 
 public class ListofItemsController {
 
@@ -86,10 +86,12 @@ public class ListofItemsController {
     }
 
     public void lookAtItem(){
-        Items item = tableView.getSelectionModel().getSelectedItem();
-        priceBox.setText(item.getPrice());
-        serialNumberBox.setText(item.getSerialNumber());
-        nameOfItem.setText(item.getItemName());
+        if(!tableView.getItems().isEmpty()){
+            Items item = tableView.getSelectionModel().getSelectedItem();
+            priceBox.setText(item.getPrice());
+            serialNumberBox.setText(item.getSerialNumber());
+            nameOfItem.setText(item.getItemName());
+        }
     }
 
     public String editItem() throws IOException {
@@ -119,7 +121,9 @@ public class ListofItemsController {
         ObservableList<Items> itemSelected, allItems;
         allItems = tableView.getItems();
         itemSelected = tableView.getSelectionModel().getSelectedItems();
-        itemSelected.forEach(allItems::remove);
+        try {
+            itemSelected.forEach(allItems::remove);
+        } catch (NoSuchElementException ignore){}
         return "I deleted an item";
     }
 
@@ -285,9 +289,6 @@ public class ListofItemsController {
             while((text = reader.readLine()) != null){
                 String[] textList = text.split("\t");
                 //Price, SN, Name
-                ItemVerifier.checkPrice(textList[0]);
-                ItemVerifier.checkSN(textList[1]);
-                ItemVerifier.checkName(textList[2]);
 
                 Items item = new Items();
                 item.setPrice(textList[0]);
@@ -304,31 +305,35 @@ public class ListofItemsController {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             StringBuilder textBuild = new StringBuilder();
             String text;
+            int count = 0;
             while((text = reader.readLine()) != null){
                 if(text.contains("<td>")){
-                    //text = text.replace(" ", "");
                     text = text.replace("<td>", "");
                     text = text.replace("</td>", "");
-                    text = text.replace("\n", ",");
-                    textBuild.append(text).append("\n");
+                    text = text.replace("\t", "");
+                    textBuild.append(text).append(" ");
+                    count += 1;
                 }
-
             }
             reader.close();
+            /*PrintWriter writer = new PrintWriter(new FileWriter("test.txt"));
+            writer.write(textBuild.toString());
+            writer.close();*/
 
-                String[] info = textBuild.toString().split(",");
-                System.out.println(textBuild);
-                System.out.println(Arrays.toString(info));
+            for(int i=0; i <= count; i+=3) {
+                if(i + 3 > count){
+                    break;
+                }
+                String[] info = textBuild.toString().split(" ");
+                /*System.out.println(textBuild);
+                System.out.println(Arrays.toString(info));*/
 
-                ItemVerifier.checkPrice(info[0]);
-                ItemVerifier.checkSN(info[1]);
-                ItemVerifier.checkName(info[2]);
                 Items item = new Items();
-                item.setPrice(info[0]);
-                item.setSerialNumber(info[1]);
-                item.setItemName(info[2]);
+                item.setPrice(info[i]);
+                item.setSerialNumber(info[i+1]);
+                item.setItemName(info[i+2]);
                 ItemList.add(item);
-
+            }
             return "I loaded a html";
         }
 
